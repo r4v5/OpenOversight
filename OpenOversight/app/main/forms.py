@@ -8,7 +8,7 @@ from flask_wtf.file import FileAllowed
 
 # Choices are a list of (value, label) tuples
 RACE_CHOICES = [('BLACK', 'Black'), ('WHITE', 'White'), ('ASIAN', 'Asian'),
-                ('HISPANIC', 'Hispanic'), ('PACIFIC ISLANDER', 'Pacific Islander'), 
+                ('HISPANIC', 'Hispanic'), ('PACIFIC ISLANDER', 'Pacific Islander'),
                 ('Other', 'Other'), ('Not Sure', 'Not Sure')]
 GENDER_CHOICES = [('M', 'Male'), ('F', 'Female'), ('Other', 'Other'),
                   ('Not Sure', 'Not Sure')]
@@ -28,7 +28,7 @@ def allowed_values(choices):
 class HumintContribution(Form):
     photo = FileField('image', validators=[
         DataRequired(),
-        FileAllowed(['png', 'jpg', 'jpeg', 'mpg', 'mpeg', 'mp4', 'mov'], 
+        FileAllowed(['png', 'jpg', 'jpeg', 'mpg', 'mpeg', 'mp4', 'mov'],
                     'Images and movies only!')
     ])
 
@@ -49,7 +49,7 @@ class FindOfficerForm(Form):
     race = SelectField('race', default='WHITE', choices=RACE_CHOICES,
                        validators=[AnyOf(allowed_values(RACE_CHOICES))])
     gender = SelectField('gender', default='MALE',
-                         choices=GENDER_CHOICES, 
+                         choices=GENDER_CHOICES,
                          validators=[AnyOf(allowed_values(GENDER_CHOICES))])
     min_age = IntegerField('min_age', default=16, validators=[
         NumberRange(min=16, max=100)
