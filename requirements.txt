@@ -11,3 +11,5 @@ gunicorn==17.5
 pytest==3.0.3
 faker==0.7.3
 fabric
+pytest-cov==2.4.0
+pytest-pep8==1.0.6

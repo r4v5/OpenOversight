@@ -1,4 +1,4 @@
-from OpenOversight.app import utils
+from app import utils
 
 # Utils tests
 def test_race_filter_select_all_black_officers(mockdata):
