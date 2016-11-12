@@ -5,7 +5,6 @@ load_dotenv(find_dotenv())
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-
 class BaseConfig(object):
     # DB SETUP
     SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
@@ -40,7 +39,7 @@ class ProductionConfig(BaseConfig):
 
     @classmethod
     def init_app(cls, app):
-        Config.init_app(app)
+        BaseConfig.init_app(app)
 
 config = {
     'development': DevelopmentConfig,
@@ -48,20 +47,3 @@ config = {
     'production': ProductionConfig,
     'default': DevelopmentConfig
 }
-
-#
-# # DB SETUP
-# SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
-# SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
-# SQLALCHEMY_TRACK_MODIFICATIONS = False
-#
-# # File Upload Settings
-# UNLABELLED_UPLOADS = 'uploads/'
-# ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'mpeg', 'mp4'])
-#
-# # pagination
-# OFFICERS_PER_PAGE = os.environ.get('OFFICERS_PER_PAGE', 20)
-#
-# # Form Settings
-# WTF_CSRF_ENABLED = True
-# SECRET_KEY = 'changemeplzorelsehax'
