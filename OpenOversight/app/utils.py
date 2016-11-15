@@ -4,7 +4,7 @@ from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import desc, asc, func
 from sqlalchemy.sql.expression import cast
-from app import create_app
+from OpenOversight.app import create_app
 from .models import Officer, Assignment, Image, Face
 import pdb
 app = create_app('default')
@@ -55,7 +55,6 @@ def filter_by_form(form, officer_query):
     # This handles the sorting upstream of pagination and pushes officers w/o tagged faces to the end of list
     officer_query = officer_query.outerjoin(Face).order_by(Face.officer_id.asc()).order_by(Officer.id.desc())
     return officer_query
-
 
 def filter_roster(form, officer_query):
     if form['name']:

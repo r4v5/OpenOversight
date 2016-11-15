@@ -1,12 +1,10 @@
 import os
 from flask import (render_template, request, redirect, url_for,
-                   send_from_directory, flash, session)
+                   send_from_directory, flash, session, current_app)
 from werkzeug import secure_filename
 from . import main
-from ..utils import allowed_file, grab_officers
-from .forms import FindOfficerForm
-import config
-
+from ..utils import allowed_file, grab_officers, roster_lookup
+from .forms import FindOfficerForm, FindOfficerIDForm
 
 @main.route('/')
 @main.route('/index')
@@ -18,24 +16,31 @@ def index():
 def get_officer():
     form = FindOfficerForm()
     if form.validate_on_submit():
-        #  flash('[DEBUG] Forms validate correctly')
-        return redirect(url_for('get_gallery'), code=307)
+        return redirect(url_for('main.get_gallery'), code=307)
     return render_template('input_find_officer.html', form=form)
 
+@main.route('/label', methods=['GET', 'POST'])
+def label_data():
+    form = FindOfficerIDForm()
+    if form.validate_on_submit():
+        #  flash('[DEBUG] Forms validate correctly')
+        return redirect(url_for('main.get_tagger_gallery'), code=307)
+    return render_template('label_data.html', form=form)
 
 @main.route('/tagger_gallery/<int:page>', methods=['POST'])
 @main.route('/tagger_gallery', methods=['POST'])
 def get_tagger_gallery(page=1):
     form = FindOfficerIDForm()
     if form.validate_on_submit():
+        OFFICERS_PER_PAGE = int(current_app.config['OFFICERS_PER_PAGE'])
         form_values = form.data
-        officers = roster_lookup(form_values).paginate(page, config.OFFICERS_PER_PAGE, False)
+        officers = roster_lookup(form_values).paginate(page, OFFICERS_PER_PAGE, False)
         return render_template('tagger_gallery.html',
                                officers=officers,
                                form=form,
                                form_data=form_values)
     else:
-        return redirect(url_for('label_data'))
+        return redirect(url_for('main.label_data'), code=307)
 
 
 @main.route('/gallery/<int:page>', methods=['POST'])
@@ -43,14 +48,15 @@ def get_tagger_gallery(page=1):
 def get_gallery(page=1):
     form = FindOfficerForm()
     if form.validate_on_submit():
+        OFFICERS_PER_PAGE = int(current_app.config['OFFICERS_PER_PAGE'])
         form_values = form.data
-        officers = grab_officers(form_values).paginate(page, config.OFFICERS_PER_PAGE, False)
+        officers = grab_officers(form_values).paginate(page, OFFICERS_PER_PAGE, False)
         return render_template('gallery.html',
                                officers=officers,
                                form=form,
                                form_data=form_values)
     else:
-        return redirect(url_for('get_officer'))
+        return redirect(url_for('main.get_officer'))
 
 @main.route('/complaint', methods=['GET', 'POST'])
 def submit_complaint():
@@ -72,8 +78,8 @@ def upload_file():
     file = request.files['file']
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UNLABELLED_UPLOADS'], filename))
-        return redirect(url_for('show_upload',
+        file.save(os.path.join(current_app.config['UNLABELLED_UPLOADS'], filename))
+        return redirect(url_for('main.show_upload',
                                 filename=filename))
 
 
@@ -84,7 +90,6 @@ def show_upload(filename):
     return 'Successfully uploaded: {}'.format(filename)
 
 
-<<<<<<< HEAD:OpenOversight/app/views.py
 @main.route('/label', methods=['GET', 'POST'])
 def label_data():
     form = FindOfficerForm()
@@ -92,7 +97,6 @@ def label_data():
         #  flash('[DEBUG] Forms validate correctly')
         return redirect(url_for('get_tagger_gallery'), code=307)
     return render_template('label_data.html', form=form)
-
 
 @main.route('/about')
 def about_oo():
